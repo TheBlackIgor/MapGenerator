@@ -1,0 +1,47 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+body {
+  background-color: rgb(40, 40, 40);
+  color: white;
+  display: flex;
+  flex-direction: row;
+}
+h2 {
+  margin: 10px;
+}
+body > div {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.drawer {
+  width: 680px;
+}
+.palete {
+  width: 1088px;
+  min-width: 1088px;
+}
+
+#items,
+#map {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.block {
+  width: 30px;
+  height: 30px;
+  margin: 1px;
+  border: 1px white dashed;
+}
+
+.block > img {
+  width: 30px;
+  height: 30px;
+}
