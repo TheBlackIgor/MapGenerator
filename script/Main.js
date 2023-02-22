@@ -1,10 +1,10 @@
 "use strict";
 exports.__esModule = true;
-var Cursor_js_1 = require("./script/Cursor.js");
+var Cursor_js_1 = require("./Cursor.js");
 var init = function () {
     var images = [];
     var spriteSheet = new Image();
-    spriteSheet.src = "./sprites.png";
+    spriteSheet.src = "../sprites.png";
     spriteSheet.onload = function () {
         var columns = 32;
         var rows = 20;

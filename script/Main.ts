@@ -1,10 +1,10 @@
-import Cursor from "./script/Cursor.js";
-import Palete from "./script/Palets.js";
+import Cursor from "./Cursor.js";
+import _ from "lodash";
 
 const init = () => {
   const images: string[] = [];
   let spriteSheet = new Image();
-  spriteSheet.src = "./sprites.png";
+  spriteSheet.src = "../sprites.png";
   spriteSheet.onload = () => {
     const columns = 32;
     const rows = 20;
