@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es6",
     "esModuleInterop": true,
-    "moduleResolution": "node"
-    // ... your other options
+    "moduleResolution": "node",
+    "watch": true
   }
 }

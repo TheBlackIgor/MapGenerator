@@ -14,12 +14,16 @@ export default class DrawerBlock {
     this.block.classList.add("block");
     this.block.setAttribute("id", this.id);
 
-    this.block.style.backgroundImage = this.parseImage(content);
+    this.setImage(content);
     if (items) items.appendChild(this.block);
-    this.block.click = () => func(this.block);
+    this.block.onclick = () => func(this.block);
   }
 
   parseImage = (x: string) => {
     return `url("${x}")`;
+  };
+
+  setImage = (x: string) => {
+    this.block.style.backgroundImage = `url("${x}")`;
   };
 }

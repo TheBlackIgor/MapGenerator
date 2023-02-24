@@ -1,9 +1,10 @@
+import DrawerBlock from "./DrawerBlock";
+import MapBlock from "./MapBlock";
 import Palete from "./Palets";
 
 export default class Cursor {
-  pickedBlock: HTMLDivElement;
-  drawerItems: HTMLDivElement[];
-  mapItems: HTMLDivElement[];
+  pickedBlock: DrawerBlock;
+  selectedBlock: MapBlock;
   filledPalete: Palete;
   emptyPalete: Palete;
 
@@ -12,8 +13,11 @@ export default class Cursor {
     this.emptyPalete = new Palete(() => {});
   }
 
-  pickBlock = (block: HTMLDivElement) => {
+  pickBlock = (block: DrawerBlock) => {
     this.pickedBlock = block;
-    console.log(block);
+  };
+
+  selectBlock = (block: MapBlock) => {
+    this.selectedBlock = block;
   };
 }

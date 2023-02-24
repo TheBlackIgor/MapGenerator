@@ -7,14 +7,17 @@ var DrawerBlock = /** @class */ (function () {
         this.parseImage = function (x) {
             return "url(\"".concat(x, "\")");
         };
+        this.setImage = function (x) {
+            _this.block.style.backgroundImage = "url(\"".concat(x, "\")");
+        };
         this.id = "drawer" + id;
         this.block = document.createElement("div");
         this.block.classList.add("block");
         this.block.setAttribute("id", this.id);
-        this.block.style.backgroundImage = this.parseImage(content);
+        this.setImage(content);
         if (items)
             items.appendChild(this.block);
-        this.block.click = function () { return func(_this.block); };
+        this.block.onclick = function () { return func(_this.block); };
     }
     return DrawerBlock;
 }());

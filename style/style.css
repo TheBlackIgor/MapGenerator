@@ -39,9 +39,5 @@ body > div {
   height: 30px;
   margin: 1px;
   border: 1px white dashed;
-}
-
-.block > img {
-  width: 30px;
-  height: 30px;
+  background-size: 30px;
 }
