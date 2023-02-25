@@ -21,6 +21,7 @@ body > div {
 }
 .drawer {
   width: 680px;
+  margin: 0 10px;
 }
 .palete {
   width: 1088px;
@@ -34,10 +35,59 @@ body > div {
   flex-wrap: wrap;
 }
 
+#items {
+  min-width: 200px;
+  height: 800px;
+  overflow-y: scroll;
+}
+#items > .block {
+  margin: 2px;
+  opacity: 0.6;
+  cursor: pointer;
+}
+#items > .block:hover {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+#map > .block:hover {
+  border-color: orange;
+  cursor: pointer;
+}
+
 .block {
+  transition: all ease 0.3s;
   width: 30px;
   height: 30px;
   margin: 1px;
   border: 1px white dashed;
   background-size: 30px;
+}
+.selected {
+  border-color: orange;
+}
+.selector {
+  position: absolute;
+  background-color: rgba(255, 166, 0, 0.404);
+  border: 1px solid orange;
+}
+.contextmenu {
+  position: absolute;
+  width: 120px;
+  background-color: rgb(19, 19, 19);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+}
+.contextmenu > div {
+  color: white;
+  text-align: center;
+  padding: 10px;
+  cursor: pointer;
+  transition: 0.4s all ease;
+  width: 100px;
+}
+
+.contextmenu > div:hover {
+  background-color: rgb(31, 31, 31);
 }
