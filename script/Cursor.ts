@@ -21,7 +21,7 @@ export default class Cursor {
   helperBlocksArray: MapBlock[] = [];
   contextmenu: Contextmenu;
   changeState: number = 0;
-  history: MapBlock[][] = [];
+  history: string[][] = [];
 
   constructor(images: string[]) {
     this.filledPalete = new DrawerPalete(this.pickBlock, images);
@@ -51,16 +51,15 @@ export default class Cursor {
       e.preventDefault();
       this.contextmenu.show(e.clientX, e.clientY);
     };
+    this.history.push(this.getHistoryImages());
   }
 
   pickBlock = (block: DrawerBlock) => {
-    if (this.history.length > this.changeState)
-      this.history.slice(this.changeState);
+    if (this.selectedBlocks.length === 0) return;
+    if (this.history.length > this.changeState - 1) {
+      this.history = this.history.slice(0, this.changeState + 1);
+    }
     this.changeState++;
-    const copyOfPreviousPalete = [...this.mapPalete.blocks].map((item) =>
-      _.cloneDeep(item)
-    );
-    this.history.push(copyOfPreviousPalete);
     const changeContent = () =>
       this.selectedBlocks.forEach((item) => item.setContent(block.content));
     if (!this.next) {
@@ -81,6 +80,7 @@ export default class Cursor {
       this.selectedBlocks.push(tempBlock);
       this.selectedBlocks[0].select();
     }
+    this.history.push(this.getHistoryImages());
   };
 
   mapBlockClick = (block: MapBlock) => {
@@ -129,12 +129,21 @@ export default class Cursor {
 
   undo = () => {
     if (this.changeState === 0) return;
-    this.changeState--;
-    this.mapPalete.undo(this.history[this.changeState]);
-    this.history.forEach((ar) => console.log(ar[639].block));
+    this.changeState -= 1;
+    this.mapPalete.overritePalete(this.history[this.changeState]);
   };
-  reundo = () => {};
+  reundo = () => {
+    if (this.changeState === this.history.length - 1) return;
+    this.changeState += 1;
+    this.mapPalete.overritePalete(this.history[this.changeState]);
+  };
   copy = () => {};
   cut = () => {};
   paste = () => {};
+
+  getHistoryImages = () => {
+    return this.mapPalete.blocks.map((block) =>
+      block.content === undefined ? "" : block.content
+    );
+  };
 }

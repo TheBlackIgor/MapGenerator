@@ -5,9 +5,9 @@ var MapPalete = /** @class */ (function () {
     function MapPalete(func) {
         var _this = this;
         this.blocks = [];
-        this.undo = function (array) {
+        this.overritePalete = function (array) {
             for (var i = 0; i < _this.blocks.length; i++) {
-                _this.blocks[i].setBlock(array[i].block);
+                _this.blocks[i].setContent(array[i]);
             }
         };
         var columns = 20;

@@ -17,6 +17,7 @@ export default class Selector {
     tempSelect: (selector: HTMLDivElement) => void
   ) {
     map.onmousedown = (e: MouseEvent) => {
+      if (e.button !== 0) return;
       if (this.selector) map.removeChild(this.selector);
       this.mouseDown = true;
       this.startPosX = e.clientX;
@@ -26,11 +27,11 @@ export default class Selector {
       map.appendChild(this.selector);
     };
     map.onmousemove = (e: MouseEvent) => {
+      if (!this.mouseDown) return;
       let width = 0;
       let height = 0;
       let startPosX = 0;
       let startPosY = 0;
-      if (!this.mouseDown) return;
       if (this.startPosX > e.clientX) {
         width = this.startPosX - e.clientX;
         startPosX = e.clientX;
@@ -52,7 +53,8 @@ export default class Selector {
       tempSelect(this.selector);
     };
 
-    map.onmouseup = () => {
+    map.onmouseup = (e) => {
+      if (e.button !== 0) return;
       this.mouseDown = false;
       select(this.selector);
       map.removeChild(this.selector);

@@ -25,13 +25,12 @@ var Cursor = /** @class */ (function () {
         this.changeState = 0;
         this.history = [];
         this.pickBlock = function (block) {
-            if (_this.history.length > _this.changeState)
-                _this.history.slice(_this.changeState);
+            if (_this.selectedBlocks.length === 0)
+                return;
+            if (_this.history.length > _this.changeState - 1) {
+                _this.history = _this.history.slice(0, _this.changeState + 1);
+            }
             _this.changeState++;
-            var copyOfPreviousPalete = __spreadArray([], _this.mapPalete.blocks, true).map(function (item) {
-                return _.cloneDeep(item);
-            });
-            _this.history.push(copyOfPreviousPalete);
             var changeContent = function () {
                 return _this.selectedBlocks.forEach(function (item) { return item.setContent(block.content); });
             };
@@ -53,6 +52,7 @@ var Cursor = /** @class */ (function () {
                 _this.selectedBlocks.push(tempBlock);
                 _this.selectedBlocks[0].select();
             }
+            _this.history.push(_this.getHistoryImages());
         };
         this.mapBlockClick = function (block) {
             if (_this.selectedBlocks.length > 0)
@@ -87,14 +87,23 @@ var Cursor = /** @class */ (function () {
         this.undo = function () {
             if (_this.changeState === 0)
                 return;
-            _this.changeState--;
-            _this.mapPalete.undo(_this.history[_this.changeState]);
-            _this.history.forEach(function (ar) { return console.log(ar[639].block); });
+            _this.changeState -= 1;
+            _this.mapPalete.overritePalete(_this.history[_this.changeState]);
         };
-        this.reundo = function () { };
+        this.reundo = function () {
+            if (_this.changeState === _this.history.length - 1)
+                return;
+            _this.changeState += 1;
+            _this.mapPalete.overritePalete(_this.history[_this.changeState]);
+        };
         this.copy = function () { };
         this.cut = function () { };
         this.paste = function () { };
+        this.getHistoryImages = function () {
+            return _this.mapPalete.blocks.map(function (block) {
+                return block.content === undefined ? "" : block.content;
+            });
+        };
         this.filledPalete = new DrawerPalete_1["default"](this.pickBlock, images);
         this.mapPalete = new MapPalete_1["default"](this.mapBlockClick);
         this.mapBlocks = this.mapPalete.blocks;
@@ -113,6 +122,7 @@ var Cursor = /** @class */ (function () {
             e.preventDefault();
             _this.contextmenu.show(e.clientX, e.clientY);
         };
+        this.history.push(this.getHistoryImages());
     }
     Cursor.prototype.elementsOverlap = function (el1, el2) {
         var domRect1 = el1.getBoundingClientRect();

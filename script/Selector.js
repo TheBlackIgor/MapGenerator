@@ -6,6 +6,8 @@ var Selector = /** @class */ (function () {
         var _this = this;
         this.mouseDown = false;
         map.onmousedown = function (e) {
+            if (e.button !== 0)
+                return;
             if (_this.selector)
                 map.removeChild(_this.selector);
             _this.mouseDown = true;
@@ -16,12 +18,12 @@ var Selector = /** @class */ (function () {
             map.appendChild(_this.selector);
         };
         map.onmousemove = function (e) {
+            if (!_this.mouseDown)
+                return;
             var width = 0;
             var height = 0;
             var startPosX = 0;
             var startPosY = 0;
-            if (!_this.mouseDown)
-                return;
             if (_this.startPosX > e.clientX) {
                 width = _this.startPosX - e.clientX;
                 startPosX = e.clientX;
@@ -44,7 +46,9 @@ var Selector = /** @class */ (function () {
             _this.selector.style.height = height + "px";
             tempSelect(_this.selector);
         };
-        map.onmouseup = function () {
+        map.onmouseup = function (e) {
+            if (e.button !== 0)
+                return;
             _this.mouseDown = false;
             select(_this.selector);
             map.removeChild(_this.selector);

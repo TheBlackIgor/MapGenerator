@@ -15,9 +15,9 @@ export default class MapPalete {
       this.blocks.push(block);
     }
   }
-  undo = (array: MapBlock[]) => {
+  overritePalete = (array: string[]) => {
     for (let i = 0; i < this.blocks.length; i++) {
-      this.blocks[i].setBlock(array[i].block);
+      this.blocks[i].setContent(array[i]);
     }
   };
 }
