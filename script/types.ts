@@ -8,3 +8,8 @@ export interface BlockI {
   unSelect: () => void;
   setImage: (x: string) => void;
 }
+export interface CopyI {
+  x: number;
+  y: number;
+  content: string;
+}

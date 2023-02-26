@@ -5,7 +5,7 @@ import MapBlock from "./MapBlock";
 import MapPalete from "./MapPalete";
 import Selector from "./Selector";
 const checkbox = document.getElementById("selectNext");
-import { BlockI } from "./types.js";
+import { BlockI, CopyI } from "./types.js";
 var _ = require("lodash");
 
 export default class Cursor {
@@ -22,10 +22,16 @@ export default class Cursor {
   contextmenu: Contextmenu;
   changeState: number = 0;
   history: string[][] = [];
+  copiedBlocks: CopyI[] = [];
+  pasting: boolean = false;
 
   constructor(images: string[]) {
     this.filledPalete = new DrawerPalete(this.pickBlock, images);
-    this.mapPalete = new MapPalete(this.mapBlockClick);
+    this.mapPalete = new MapPalete(
+      this.mapBlockClick,
+      this.overritePaste,
+      this.getFirstElementToPaste
+    );
     this.mapBlocks = this.mapPalete.blocks;
     checkbox.onclick = () => (this.next = !this.next);
 
@@ -64,11 +70,11 @@ export default class Cursor {
       this.selectedBlocks.forEach((item) => item.setContent(block.content));
     if (!this.next) {
       changeContent();
-      this.selectedBlocks.forEach((block) => block.unSelect());
+      this.unSelect();
       this.selectedBlocks = [];
     } else if (this.next) {
       changeContent();
-      this.selectedBlocks.forEach((block) => block.unSelect());
+      this.unSelect();
       const tempBlock = this.mapPalete.blocks
         .map((block) => block)
         .find(
@@ -84,11 +90,14 @@ export default class Cursor {
   };
 
   mapBlockClick = (block: MapBlock) => {
-    if (this.selectedBlocks.length > 0)
-      this.selectedBlocks.forEach((block) => block.unSelect());
-    if (!(this.keyDown && this.keyId === "Control")) this.selectedBlocks = [];
-    this.selectedBlocks.push(block);
-    this.selectedBlocks.forEach((block) => block.select());
+    if (!this.pasting) {
+      if (this.selectedBlocks.length > 0) this.unSelect();
+      if (!(this.keyDown && this.keyId === "Control")) this.selectedBlocks = [];
+      this.selectedBlocks.push(block);
+      this.selectedBlocks.forEach((block) => block.select());
+    } else {
+      this.pasting = false;
+    }
   };
 
   selectorEffect = (selector: HTMLDivElement) => {
@@ -103,8 +112,7 @@ export default class Cursor {
 
   setSelector = (selector: HTMLDivElement) => {
     this.helperBlocksArray = [];
-    if (this.selectedBlocks.length > 0)
-      this.selectedBlocks.forEach((block) => block.unSelect());
+    if (this.selectedBlocks.length > 0) this.unSelect();
     if (!(this.keyDown && this.keyId === "Control")) this.selectedBlocks = [];
     const tempBlockArray = this.mapPalete.blocks
       .map((block) => block)
@@ -137,13 +145,36 @@ export default class Cursor {
     this.changeState += 1;
     this.mapPalete.overritePalete(this.history[this.changeState]);
   };
-  copy = () => {};
-  cut = () => {};
+  copy = () => {
+    let width = this.selectedBlocks[0].x;
+    let height = this.selectedBlocks[0].y;
+    this.copiedBlocks = this.selectedBlocks.map((block) => {
+      return {
+        x: block.x - width,
+        y: block.y - height,
+        content: block.content,
+      };
+    });
+    console.log(this.copiedBlocks);
+  };
+  cut = () => {
+    this.copy();
+    this.selectedBlocks.forEach((block) => block.setContent(""));
+    this.unSelect();
+  };
   paste = () => {};
+
+  overritePaste = (img: string) => {};
+
+  getFirstElementToPaste = (x: number, y: number) => {};
 
   getHistoryImages = () => {
     return this.mapPalete.blocks.map((block) =>
       block.content === undefined ? "" : block.content
     );
+  };
+
+  unSelect = () => {
+    this.selectedBlocks.forEach((block) => block.unSelect());
   };
 }

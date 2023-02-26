@@ -2,7 +2,7 @@
 exports.__esModule = true;
 var map = document.getElementById("map");
 var MapBlock = /** @class */ (function () {
-    function MapBlock(func, id, x, y) {
+    function MapBlock(func, pasteOverrite, id, x, y) {
         var _this = this;
         this.setImage = function (x) {
             _this.block.style.backgroundImage = "url(\"".concat(x, "\")");
@@ -21,6 +21,7 @@ var MapBlock = /** @class */ (function () {
         if (map)
             map.appendChild(this.block);
         this.block.onclick = function () { return func(_this); };
+        this.block.onmouseover = function () { };
         this.x = x;
         this.y = y;
     }

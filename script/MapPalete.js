@@ -2,7 +2,7 @@
 exports.__esModule = true;
 var MapBlock_js_1 = require("./MapBlock.js");
 var MapPalete = /** @class */ (function () {
-    function MapPalete(func) {
+    function MapPalete(func, pasteOverrite, getFirstElementToPaste) {
         var _this = this;
         this.blocks = [];
         this.overritePalete = function (array) {
@@ -13,7 +13,7 @@ var MapPalete = /** @class */ (function () {
         var columns = 20;
         var rows = 32;
         for (var i = 0; i < columns * rows; i++) {
-            var block = new MapBlock_js_1["default"](func, String(i), i % rows, Number(parseInt((i / rows).toFixed(2))));
+            var block = new MapBlock_js_1["default"](func, pasteOverrite, String(i), i % rows, Number(parseInt((i / rows).toFixed(2))));
             this.blocks.push(block);
         }
     }

@@ -24,6 +24,8 @@ var Cursor = /** @class */ (function () {
         this.helperBlocksArray = [];
         this.changeState = 0;
         this.history = [];
+        this.copiedBlocks = [];
+        this.pasting = false;
         this.pickBlock = function (block) {
             if (_this.selectedBlocks.length === 0)
                 return;
@@ -36,12 +38,12 @@ var Cursor = /** @class */ (function () {
             };
             if (!_this.next) {
                 changeContent();
-                _this.selectedBlocks.forEach(function (block) { return block.unSelect(); });
+                _this.unSelect();
                 _this.selectedBlocks = [];
             }
             else if (_this.next) {
                 changeContent();
-                _this.selectedBlocks.forEach(function (block) { return block.unSelect(); });
+                _this.unSelect();
                 var tempBlock = _this.mapPalete.blocks
                     .map(function (block) { return block; })
                     .find(function (block) {
@@ -55,12 +57,17 @@ var Cursor = /** @class */ (function () {
             _this.history.push(_this.getHistoryImages());
         };
         this.mapBlockClick = function (block) {
-            if (_this.selectedBlocks.length > 0)
-                _this.selectedBlocks.forEach(function (block) { return block.unSelect(); });
-            if (!(_this.keyDown && _this.keyId === "Control"))
-                _this.selectedBlocks = [];
-            _this.selectedBlocks.push(block);
-            _this.selectedBlocks.forEach(function (block) { return block.select(); });
+            if (!_this.pasting) {
+                if (_this.selectedBlocks.length > 0)
+                    _this.unSelect();
+                if (!(_this.keyDown && _this.keyId === "Control"))
+                    _this.selectedBlocks = [];
+                _this.selectedBlocks.push(block);
+                _this.selectedBlocks.forEach(function (block) { return block.select(); });
+            }
+            else {
+                _this.pasting = false;
+            }
         };
         this.selectorEffect = function (selector) {
             var tempBlockArray = _this.mapPalete.blocks
@@ -74,7 +81,7 @@ var Cursor = /** @class */ (function () {
         this.setSelector = function (selector) {
             _this.helperBlocksArray = [];
             if (_this.selectedBlocks.length > 0)
-                _this.selectedBlocks.forEach(function (block) { return block.unSelect(); });
+                _this.unSelect();
             if (!(_this.keyDown && _this.keyId === "Control"))
                 _this.selectedBlocks = [];
             var tempBlockArray = _this.mapPalete.blocks
@@ -96,16 +103,36 @@ var Cursor = /** @class */ (function () {
             _this.changeState += 1;
             _this.mapPalete.overritePalete(_this.history[_this.changeState]);
         };
-        this.copy = function () { };
-        this.cut = function () { };
+        this.copy = function () {
+            var width = _this.selectedBlocks[0].x;
+            var height = _this.selectedBlocks[0].y;
+            _this.copiedBlocks = _this.selectedBlocks.map(function (block) {
+                return {
+                    x: block.x - width,
+                    y: block.y - height,
+                    content: block.content
+                };
+            });
+            console.log(_this.copiedBlocks);
+        };
+        this.cut = function () {
+            _this.copy();
+            _this.selectedBlocks.forEach(function (block) { return block.setContent(""); });
+            _this.unSelect();
+        };
         this.paste = function () { };
+        this.overritePaste = function (img) { };
+        this.getFirstElementToPaste = function (x, y) { };
         this.getHistoryImages = function () {
             return _this.mapPalete.blocks.map(function (block) {
                 return block.content === undefined ? "" : block.content;
             });
         };
+        this.unSelect = function () {
+            _this.selectedBlocks.forEach(function (block) { return block.unSelect(); });
+        };
         this.filledPalete = new DrawerPalete_1["default"](this.pickBlock, images);
-        this.mapPalete = new MapPalete_1["default"](this.mapBlockClick);
+        this.mapPalete = new MapPalete_1["default"](this.mapBlockClick, this.overritePaste, this.getFirstElementToPaste);
         this.mapBlocks = this.mapPalete.blocks;
         checkbox.onclick = function () { return (_this.next = !_this.next); };
         this.selector = new Selector_1["default"](this.setSelector, this.selectorEffect);

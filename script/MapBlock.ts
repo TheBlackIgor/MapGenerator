@@ -10,6 +10,7 @@ export default class MapBlock {
 
   constructor(
     func: (item: MapBlock) => void,
+    pasteOverrite: (img: string) => void,
     id: string,
     x: number,
     y: number
@@ -24,6 +25,7 @@ export default class MapBlock {
     this.block.setAttribute("index", id);
     if (map) map.appendChild(this.block);
     this.block.onclick = () => func(this);
+    this.block.onmouseover = () => {};
     this.x = x;
     this.y = y;
   }
