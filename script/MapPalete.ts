@@ -4,7 +4,6 @@ export default class MapPalete {
   blocks: MapBlock[] = [];
   constructor(
     func: (block: MapBlock) => void,
-    pasteOverrite: (img: string) => void,
     getFirstElementToPaste: (x: number, y: number) => void
   ) {
     const columns = 20;
@@ -12,7 +11,7 @@ export default class MapPalete {
     for (let i = 0; i < columns * rows; i++) {
       const block = new MapBlock(
         func,
-        pasteOverrite,
+        getFirstElementToPaste,
         String(i),
         i % rows,
         Number(parseInt((i / rows).toFixed(2)))

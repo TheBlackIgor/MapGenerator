@@ -121,8 +121,9 @@ var Cursor = /** @class */ (function () {
             _this.unSelect();
         };
         this.paste = function () { };
-        this.overritePaste = function (img) { };
-        this.getFirstElementToPaste = function (x, y) { };
+        this.getFirstElementToPaste = function (x, y) {
+            console.log(x, y);
+        };
         this.getHistoryImages = function () {
             return _this.mapPalete.blocks.map(function (block) {
                 return block.content === undefined ? "" : block.content;
@@ -132,7 +133,7 @@ var Cursor = /** @class */ (function () {
             _this.selectedBlocks.forEach(function (block) { return block.unSelect(); });
         };
         this.filledPalete = new DrawerPalete_1["default"](this.pickBlock, images);
-        this.mapPalete = new MapPalete_1["default"](this.mapBlockClick, this.overritePaste, this.getFirstElementToPaste);
+        this.mapPalete = new MapPalete_1["default"](this.mapBlockClick, this.getFirstElementToPaste);
         this.mapBlocks = this.mapPalete.blocks;
         checkbox.onclick = function () { return (_this.next = !_this.next); };
         this.selector = new Selector_1["default"](this.setSelector, this.selectorEffect);

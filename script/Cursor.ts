@@ -29,7 +29,6 @@ export default class Cursor {
     this.filledPalete = new DrawerPalete(this.pickBlock, images);
     this.mapPalete = new MapPalete(
       this.mapBlockClick,
-      this.overritePaste,
       this.getFirstElementToPaste
     );
     this.mapBlocks = this.mapPalete.blocks;
@@ -164,9 +163,9 @@ export default class Cursor {
   };
   paste = () => {};
 
-  overritePaste = (img: string) => {};
-
-  getFirstElementToPaste = (x: number, y: number) => {};
+  getFirstElementToPaste = (x: number, y: number) => {
+    console.log(x, y);
+  };
 
   getHistoryImages = () => {
     return this.mapPalete.blocks.map((block) =>

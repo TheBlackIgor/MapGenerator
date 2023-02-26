@@ -2,8 +2,11 @@
 exports.__esModule = true;
 var map = document.getElementById("map");
 var MapBlock = /** @class */ (function () {
-    function MapBlock(func, pasteOverrite, id, x, y) {
+    function MapBlock(func, getFirstElementToPaste, id, x, y) {
         var _this = this;
+        this.resetContent = function () {
+            _this.setImage(_this.content);
+        };
         this.setImage = function (x) {
             _this.block.style.backgroundImage = "url(\"".concat(x, "\")");
         };
@@ -21,7 +24,7 @@ var MapBlock = /** @class */ (function () {
         if (map)
             map.appendChild(this.block);
         this.block.onclick = function () { return func(_this); };
-        this.block.onmouseover = function () { };
+        this.block.onmouseover = function () { return getFirstElementToPaste(x, y); };
         this.x = x;
         this.y = y;
     }

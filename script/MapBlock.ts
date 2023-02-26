@@ -10,7 +10,7 @@ export default class MapBlock {
 
   constructor(
     func: (item: MapBlock) => void,
-    pasteOverrite: (img: string) => void,
+    getFirstElementToPaste: (x: number, y: number) => void,
     id: string,
     x: number,
     y: number
@@ -25,10 +25,14 @@ export default class MapBlock {
     this.block.setAttribute("index", id);
     if (map) map.appendChild(this.block);
     this.block.onclick = () => func(this);
-    this.block.onmouseover = () => {};
+    this.block.onmouseover = () => getFirstElementToPaste(x, y);
     this.x = x;
     this.y = y;
   }
+
+  resetContent = () => {
+    this.setImage(this.content);
+  };
 
   setContent(data: string) {
     this.content = data;
