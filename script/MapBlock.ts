@@ -52,4 +52,7 @@ export default class MapBlock {
   setBlock = (newBlock: HTMLDivElement) => {
     this.block = newBlock;
   };
+  setBorder = (color: string) => {
+    this.block.style.borderColor = color;
+  };
 }

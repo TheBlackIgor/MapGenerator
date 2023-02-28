@@ -24,6 +24,8 @@ export default class Cursor {
   history: string[][] = [];
   copiedBlocks: CopyI[] = [];
   pasting: boolean = false;
+  pasteX = -1;
+  pasteY = -1;
 
   constructor(images: string[]) {
     this.filledPalete = new DrawerPalete(this.pickBlock, images);
@@ -90,12 +92,18 @@ export default class Cursor {
 
   mapBlockClick = (block: MapBlock) => {
     if (!this.pasting) {
+      console.log("XDD");
       if (this.selectedBlocks.length > 0) this.unSelect();
       if (!(this.keyDown && this.keyId === "Control")) this.selectedBlocks = [];
       this.selectedBlocks.push(block);
       this.selectedBlocks.forEach((block) => block.select());
     } else {
+      this.selectedBlocks = [];
+      this.unSelect();
       this.pasting = false;
+      this.mapPalete.paste(this.copiedBlocks, this.pasteX, this.pasteY);
+      this.changeState++;
+      this.history.push(this.getHistoryImages());
     }
   };
 
@@ -154,17 +162,33 @@ export default class Cursor {
         content: block.content,
       };
     });
-    console.log(this.copiedBlocks);
   };
   cut = () => {
     this.copy();
     this.selectedBlocks.forEach((block) => block.setContent(""));
+    this.changeState++;
+    this.history.push(this.getHistoryImages());
     this.unSelect();
+    if (this.history.length > this.changeState - 1) {
+      this.history = this.history.slice(0, this.changeState + 1);
+    }
   };
-  paste = () => {};
+  paste = () => {
+    if (this.copiedBlocks.length === 0) return;
+    this.pasting = true;
+    if (this.history.length > this.changeState - 1) {
+      this.history = this.history.slice(0, this.changeState + 1);
+    }
+  };
 
   getFirstElementToPaste = (x: number, y: number) => {
-    console.log(x, y);
+    if (!this.pasting) return;
+    if (x !== this.pasteX || this.pasteY !== y) {
+      this.pasteX = x;
+      this.pasteY = y;
+      this.mapPalete.overritePalete(this.history[this.history.length - 1]);
+      this.mapPalete.tempOverrite(this.copiedBlocks, x, y);
+    }
   };
 
   getHistoryImages = () => {

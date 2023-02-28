@@ -26,6 +26,8 @@ var Cursor = /** @class */ (function () {
         this.history = [];
         this.copiedBlocks = [];
         this.pasting = false;
+        this.pasteX = -1;
+        this.pasteY = -1;
         this.pickBlock = function (block) {
             if (_this.selectedBlocks.length === 0)
                 return;
@@ -58,6 +60,7 @@ var Cursor = /** @class */ (function () {
         };
         this.mapBlockClick = function (block) {
             if (!_this.pasting) {
+                console.log("XDD");
                 if (_this.selectedBlocks.length > 0)
                     _this.unSelect();
                 if (!(_this.keyDown && _this.keyId === "Control"))
@@ -66,7 +69,12 @@ var Cursor = /** @class */ (function () {
                 _this.selectedBlocks.forEach(function (block) { return block.select(); });
             }
             else {
+                _this.selectedBlocks = [];
+                _this.unSelect();
                 _this.pasting = false;
+                _this.mapPalete.paste(_this.copiedBlocks, _this.pasteX, _this.pasteY);
+                _this.changeState++;
+                _this.history.push(_this.getHistoryImages());
             }
         };
         this.selectorEffect = function (selector) {
@@ -113,16 +121,34 @@ var Cursor = /** @class */ (function () {
                     content: block.content
                 };
             });
-            console.log(_this.copiedBlocks);
         };
         this.cut = function () {
             _this.copy();
             _this.selectedBlocks.forEach(function (block) { return block.setContent(""); });
+            _this.changeState++;
+            _this.history.push(_this.getHistoryImages());
             _this.unSelect();
+            if (_this.history.length > _this.changeState - 1) {
+                _this.history = _this.history.slice(0, _this.changeState + 1);
+            }
         };
-        this.paste = function () { };
+        this.paste = function () {
+            if (_this.copiedBlocks.length === 0)
+                return;
+            _this.pasting = true;
+            if (_this.history.length > _this.changeState - 1) {
+                _this.history = _this.history.slice(0, _this.changeState + 1);
+            }
+        };
         this.getFirstElementToPaste = function (x, y) {
-            console.log(x, y);
+            if (!_this.pasting)
+                return;
+            if (x !== _this.pasteX || _this.pasteY !== y) {
+                _this.pasteX = x;
+                _this.pasteY = y;
+                _this.mapPalete.overritePalete(_this.history[_this.history.length - 1]);
+                _this.mapPalete.tempOverrite(_this.copiedBlocks, x, y);
+            }
         };
         this.getHistoryImages = function () {
             return _this.mapPalete.blocks.map(function (block) {

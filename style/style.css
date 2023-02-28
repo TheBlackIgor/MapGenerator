@@ -91,3 +91,11 @@ body > div {
 .contextmenu > div:hover {
   background-color: rgb(31, 31, 31);
 }
+.paste {
+  display: none;
+  position: absolute;
+}
+#paste > .block {
+  position: absolute;
+  border-color: green;
+}

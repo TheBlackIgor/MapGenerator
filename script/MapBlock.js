@@ -13,6 +13,9 @@ var MapBlock = /** @class */ (function () {
         this.setBlock = function (newBlock) {
             _this.block = newBlock;
         };
+        this.setBorder = function (color) {
+            _this.block.style.borderColor = color;
+        };
         this.id = "map" + id;
         this.index = Number(id);
         this.block = document.createElement("div");

@@ -13,3 +13,9 @@ export interface CopyI {
   y: number;
   content: string;
 }
+
+export interface ToPasteI {
+  x: number;
+  y: number;
+  block: HTMLDivElement;
+}
