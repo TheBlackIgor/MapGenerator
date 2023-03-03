@@ -70,6 +70,7 @@ body > div {
   position: absolute;
   background-color: rgba(255, 166, 0, 0.404);
   border: 1px solid orange;
+  left: -20px;
 }
 .contextmenu {
   position: absolute;

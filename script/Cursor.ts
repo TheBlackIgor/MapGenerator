@@ -40,6 +40,25 @@ export default class Cursor {
     document.addEventListener("keydown", (e) => {
       this.keyDown = true;
       this.keyId = e.key;
+      if (e.ctrlKey && (this.keyId === "c" || this.keyId === "C")) {
+        this.copy();
+      } else if (e.ctrlKey && (this.keyId === "x" || this.keyId === "X")) {
+        this.cut();
+      } else if (e.ctrlKey && (this.keyId === "v" || this.keyId === "V")) {
+        this.paste();
+      } else if (e.ctrlKey && (this.keyId === "z" || this.keyId === "Z")) {
+        this.undo();
+      } else if (e.ctrlKey && (this.keyId === "y" || this.keyId === "Y")) {
+        this.reundo();
+      } else if (this.keyId === "Backspace") {
+        this.delete();
+      } else if (e.ctrlKey && (this.keyId === "s" || this.keyId === "S")) {
+        e.preventDefault();
+        this.save();
+      } else if (e.ctrlKey && (this.keyId === "l" || this.keyId === "L")) {
+        e.preventDefault();
+        this.load();
+      }
     });
     this.contextmenu = new Contextmenu(
       this.useContenxtmenu,
@@ -92,16 +111,23 @@ export default class Cursor {
 
   mapBlockClick = (block: MapBlock) => {
     if (!this.pasting) {
-      console.log("XDD");
       if (this.selectedBlocks.length > 0) this.unSelect();
       if (!(this.keyDown && this.keyId === "Control")) this.selectedBlocks = [];
-      this.selectedBlocks.push(block);
+      const tempBlocks = this.selectedBlocks.filter(
+        (b) => b.index !== block.index
+      );
+      if (tempBlocks.length === this.selectedBlocks.length)
+        this.selectedBlocks.push(block);
+      else this.selectedBlocks = [...tempBlocks];
       this.selectedBlocks.forEach((block) => block.select());
     } else {
       this.selectedBlocks = [];
       this.unSelect();
       this.pasting = false;
       this.mapPalete.paste(this.copiedBlocks, this.pasteX, this.pasteY);
+      if (this.history.length > this.changeState - 1) {
+        this.history = this.history.slice(0, this.changeState + 1);
+      }
       this.changeState++;
       this.history.push(this.getHistoryImages());
     }
@@ -172,6 +198,8 @@ export default class Cursor {
     if (this.history.length > this.changeState - 1) {
       this.history = this.history.slice(0, this.changeState + 1);
     }
+    this.changeState++;
+    this.history.push(this.getHistoryImages());
   };
   paste = () => {
     if (this.copiedBlocks.length === 0) return;
@@ -179,6 +207,8 @@ export default class Cursor {
     if (this.history.length > this.changeState - 1) {
       this.history = this.history.slice(0, this.changeState + 1);
     }
+    this.changeState++;
+    this.history.push(this.getHistoryImages());
   };
 
   getFirstElementToPaste = (x: number, y: number) => {
@@ -199,5 +229,48 @@ export default class Cursor {
 
   unSelect = () => {
     this.selectedBlocks.forEach((block) => block.unSelect());
+  };
+  delete = () => {
+    this.selectedBlocks.forEach((block) => block.setContent(""));
+    this.unSelect();
+    this.selectedBlocks = [];
+    if (this.history.length > this.changeState - 1) {
+      this.history = this.history.slice(0, this.changeState + 1);
+    }
+    this.changeState++;
+    this.history.push(this.getHistoryImages());
+  };
+
+  save = () => {
+    const data = this.mapPalete.blocks.map((block) => block.content);
+    const dataToSave = JSON.stringify(data);
+    const type = "application/json";
+    const filename = "map.json";
+
+    this.saveFile(dataToSave, filename, type);
+  };
+  saveFile = (data: string, filename: string, type: string) => {
+    const blob = new Blob([data], { type: type });
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.innerText = "save";
+    link.href = url;
+    link.download = filename;
+
+    document.querySelector("body").appendChild(link);
+    link.click();
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+    }, 0);
+    document.querySelector("body").removeChild(link);
+  };
+  load = () => {
+    console.log("XDDDD");
+    const reader = new FileReader();
+
+    const json = JSON.parse(String(reader.result));
+    console.log(json);
   };
 }

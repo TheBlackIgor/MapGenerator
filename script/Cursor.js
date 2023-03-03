@@ -60,12 +60,15 @@ var Cursor = /** @class */ (function () {
         };
         this.mapBlockClick = function (block) {
             if (!_this.pasting) {
-                console.log("XDD");
                 if (_this.selectedBlocks.length > 0)
                     _this.unSelect();
                 if (!(_this.keyDown && _this.keyId === "Control"))
                     _this.selectedBlocks = [];
-                _this.selectedBlocks.push(block);
+                var tempBlocks = _this.selectedBlocks.filter(function (b) { return b.index !== block.index; });
+                if (tempBlocks.length === _this.selectedBlocks.length)
+                    _this.selectedBlocks.push(block);
+                else
+                    _this.selectedBlocks = __spreadArray([], tempBlocks, true);
                 _this.selectedBlocks.forEach(function (block) { return block.select(); });
             }
             else {
@@ -73,6 +76,9 @@ var Cursor = /** @class */ (function () {
                 _this.unSelect();
                 _this.pasting = false;
                 _this.mapPalete.paste(_this.copiedBlocks, _this.pasteX, _this.pasteY);
+                if (_this.history.length > _this.changeState - 1) {
+                    _this.history = _this.history.slice(0, _this.changeState + 1);
+                }
                 _this.changeState++;
                 _this.history.push(_this.getHistoryImages());
             }
@@ -131,6 +137,8 @@ var Cursor = /** @class */ (function () {
             if (_this.history.length > _this.changeState - 1) {
                 _this.history = _this.history.slice(0, _this.changeState + 1);
             }
+            _this.changeState++;
+            _this.history.push(_this.getHistoryImages());
         };
         this.paste = function () {
             if (_this.copiedBlocks.length === 0)
@@ -139,6 +147,8 @@ var Cursor = /** @class */ (function () {
             if (_this.history.length > _this.changeState - 1) {
                 _this.history = _this.history.slice(0, _this.changeState + 1);
             }
+            _this.changeState++;
+            _this.history.push(_this.getHistoryImages());
         };
         this.getFirstElementToPaste = function (x, y) {
             if (!_this.pasting)
@@ -158,6 +168,43 @@ var Cursor = /** @class */ (function () {
         this.unSelect = function () {
             _this.selectedBlocks.forEach(function (block) { return block.unSelect(); });
         };
+        this["delete"] = function () {
+            _this.selectedBlocks.forEach(function (block) { return block.setContent(""); });
+            _this.unSelect();
+            _this.selectedBlocks = [];
+            if (_this.history.length > _this.changeState - 1) {
+                _this.history = _this.history.slice(0, _this.changeState + 1);
+            }
+            _this.changeState++;
+            _this.history.push(_this.getHistoryImages());
+        };
+        this.save = function () {
+            var data = _this.mapPalete.blocks.map(function (block) { return block.content; });
+            var dataToSave = JSON.stringify(data);
+            var type = "application/json";
+            var filename = "map.json";
+            _this.saveFile(dataToSave, filename, type);
+        };
+        this.saveFile = function (data, filename, type) {
+            var blob = new Blob([data], { type: type });
+            var url = URL.createObjectURL(blob);
+            var link = document.createElement("a");
+            link.innerText = "save";
+            link.href = url;
+            link.download = filename;
+            document.querySelector("body").appendChild(link);
+            link.click();
+            setTimeout(function () {
+                URL.revokeObjectURL(url);
+            }, 0);
+            document.querySelector("body").removeChild(link);
+        };
+        this.load = function () {
+            console.log("XDDDD");
+            var reader = new FileReader();
+            var json = JSON.parse(String(reader.result));
+            console.log(json);
+        };
         this.filledPalete = new DrawerPalete_1["default"](this.pickBlock, images);
         this.mapPalete = new MapPalete_1["default"](this.mapBlockClick, this.getFirstElementToPaste);
         this.mapBlocks = this.mapPalete.blocks;
@@ -166,6 +213,32 @@ var Cursor = /** @class */ (function () {
         document.addEventListener("keydown", function (e) {
             _this.keyDown = true;
             _this.keyId = e.key;
+            if (e.ctrlKey && (_this.keyId === "c" || _this.keyId === "C")) {
+                _this.copy();
+            }
+            else if (e.ctrlKey && (_this.keyId === "x" || _this.keyId === "X")) {
+                _this.cut();
+            }
+            else if (e.ctrlKey && (_this.keyId === "v" || _this.keyId === "V")) {
+                _this.paste();
+            }
+            else if (e.ctrlKey && (_this.keyId === "z" || _this.keyId === "Z")) {
+                _this.undo();
+            }
+            else if (e.ctrlKey && (_this.keyId === "y" || _this.keyId === "Y")) {
+                _this.reundo();
+            }
+            else if (_this.keyId === "Backspace") {
+                _this["delete"]();
+            }
+            else if (e.ctrlKey && (_this.keyId === "s" || _this.keyId === "S")) {
+                e.preventDefault();
+                _this.save();
+            }
+            else if (e.ctrlKey && (_this.keyId === "l" || _this.keyId === "L")) {
+                e.preventDefault();
+                _this.load();
+            }
         });
         this.contextmenu = new Contextmenu_1["default"](this.useContenxtmenu, this.undo, this.reundo, this.copy, this.cut, this.paste);
         document.addEventListener("keyup", function () { return (_this.keyDown = false); });
