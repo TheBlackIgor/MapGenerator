@@ -3,19 +3,20 @@ import { CopyI } from "./types.js";
 
 export default class MapPalete {
   blocks: MapBlock[] = [];
+
+  rows = 40;
+  columns = 32;
   constructor(
     func: (block: MapBlock) => void,
     getFirstElementToPaste: (x: number, y: number) => void
   ) {
-    const columns = 20;
-    const rows = 32;
-    for (let i = 0; i < columns * rows; i++) {
+    for (let i = 0; i < this.rows * this.columns; i++) {
       const block = new MapBlock(
         func,
         getFirstElementToPaste,
         String(i),
-        i % rows,
-        Number(parseInt((i / rows).toFixed(2)))
+        i % this.columns,
+        Number(parseInt((i / this.columns).toFixed(2)))
       );
       this.blocks.push(block);
     }
@@ -27,27 +28,36 @@ export default class MapPalete {
     }
   };
 
-  tempOverrite = (array: CopyI[], x: number, y: number) => {
-    let i = 0;
-    this.blocks.forEach((block) => {
-      if (i !== array.length)
-        if (block.x === array[i].x + x && block.y === array[i].y + y) {
-          block.setImage(array[i].content);
-          block.setBorder("green");
-          i++;
-        }
+  tempOverrite = (array: CopyI[], mouseX: number, mouseY: number) => {
+    array.forEach((item) => {
+      const correstpondingBlock = this.blocks.find(
+        ({ x, y }) => item.x + mouseX == x && item.y + mouseY === y
+      );
+      if (correstpondingBlock !== undefined) {
+        correstpondingBlock.setImage(item.content);
+        correstpondingBlock.setBorder("green");
+      }
     });
   };
 
-  paste = (array: CopyI[], x: number, y: number) => {
-    let i = 0;
-    this.blocks.forEach((block) => {
-      if (i !== array.length)
-        if (block.x === array[i].x + x && block.y === array[i].y + y) {
-          block.setContent(array[i].content);
-          block.setBorder(null);
-          i++;
-        }
+  paste = (array: CopyI[], mouseX: number, mouseY: number) => {
+    // let i = 0;
+    // this.blocks.forEach((block) => {
+    //   if (i !== array.length)
+    //     if (block.x === array[i].x + x && block.y === array[i].y + y) {
+    //       block.setContent(array[i].content);
+    //       block.setBorder(null);
+    //       i++;
+    //     }
+    // });
+    array.forEach((item) => {
+      const correstpondingBlock = this.blocks.find(
+        ({ x, y }) => item.x + mouseX == x && item.y + mouseY === y
+      );
+      if (correstpondingBlock !== undefined) {
+        correstpondingBlock.setContent(item.content);
+        correstpondingBlock.setBorder(null);
+      }
     });
   };
 }
