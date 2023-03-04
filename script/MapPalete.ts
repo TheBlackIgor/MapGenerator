@@ -22,7 +22,7 @@ export default class MapPalete {
   }
   overritePalete = (array: string[]) => {
     for (let i = 0; i < this.blocks.length; i++) {
-      this.blocks[i].setContent(array[i]);
+      this.blocks[i].setContent(array[i] === null ? "" : array[i]);
       this.blocks[i].setBorder(null);
     }
   };

@@ -7,6 +7,7 @@ import Selector from "./Selector";
 const checkbox = document.getElementById("selectNext");
 import { BlockI, CopyI } from "./types.js";
 var _ = require("lodash");
+document.getElementById("input");
 
 export default class Cursor {
   pickedBlock: DrawerBlock;
@@ -66,7 +67,9 @@ export default class Cursor {
       this.reundo,
       this.copy,
       this.cut,
-      this.paste
+      this.paste,
+      this.save,
+      this.load
     );
 
     document.addEventListener("keyup", () => (this.keyDown = false));
@@ -266,11 +269,27 @@ export default class Cursor {
     }, 0);
     document.querySelector("body").removeChild(link);
   };
-  load = () => {
-    console.log("XDDDD");
-    const reader = new FileReader();
 
-    const json = JSON.parse(String(reader.result));
-    console.log(json);
+  load = () => {
+    const fileInput: HTMLInputElement = document.querySelector("#input");
+    fileInput.click();
+    fileInput.onchange = (e) => {
+      const file = fileInput.files[0];
+      if (!file) {
+        console.error("No file selected");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onerror = function (event) {
+        console.error(
+          "File could not be read! Code " + event.target.error.code
+        );
+      };
+      reader.onload = () => {
+        const jsonData = JSON.parse(String(reader.result));
+        this.mapPalete.overritePalete(jsonData);
+      };
+      reader.readAsText(file);
+    };
   };
 }

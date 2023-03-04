@@ -15,6 +15,7 @@ var MapPalete_1 = require("./MapPalete");
 var Selector_1 = require("./Selector");
 var checkbox = document.getElementById("selectNext");
 var _ = require("lodash");
+document.getElementById("input");
 var Cursor = /** @class */ (function () {
     function Cursor(images) {
         var _this = this;
@@ -200,10 +201,24 @@ var Cursor = /** @class */ (function () {
             document.querySelector("body").removeChild(link);
         };
         this.load = function () {
-            console.log("XDDDD");
-            var reader = new FileReader();
-            var json = JSON.parse(String(reader.result));
-            console.log(json);
+            var fileInput = document.querySelector("#input");
+            fileInput.click();
+            fileInput.onchange = function (e) {
+                var file = fileInput.files[0];
+                if (!file) {
+                    console.error("No file selected");
+                    return;
+                }
+                var reader = new FileReader();
+                reader.onerror = function (event) {
+                    console.error("File could not be read! Code " + event.target.error.code);
+                };
+                reader.onload = function () {
+                    var jsonData = JSON.parse(String(reader.result));
+                    _this.mapPalete.overritePalete(jsonData);
+                };
+                reader.readAsText(file);
+            };
         };
         this.filledPalete = new DrawerPalete_1["default"](this.pickBlock, images);
         this.mapPalete = new MapPalete_1["default"](this.mapBlockClick, this.getFirstElementToPaste);
@@ -240,7 +255,7 @@ var Cursor = /** @class */ (function () {
                 _this.load();
             }
         });
-        this.contextmenu = new Contextmenu_1["default"](this.useContenxtmenu, this.undo, this.reundo, this.copy, this.cut, this.paste);
+        this.contextmenu = new Contextmenu_1["default"](this.useContenxtmenu, this.undo, this.reundo, this.copy, this.cut, this.paste, this.save, this.load);
         document.addEventListener("keyup", function () { return (_this.keyDown = false); });
         document.querySelector("body").onclick = function () {
             _this.contextmenu.hide();

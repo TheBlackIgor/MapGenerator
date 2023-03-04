@@ -7,7 +7,7 @@ var MapPalete = /** @class */ (function () {
         this.blocks = [];
         this.overritePalete = function (array) {
             for (var i = 0; i < _this.blocks.length; i++) {
-                _this.blocks[i].setContent(array[i]);
+                _this.blocks[i].setContent(array[i] === null ? "" : array[i]);
                 _this.blocks[i].setBorder(null);
             }
         };

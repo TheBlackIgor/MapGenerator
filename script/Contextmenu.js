@@ -1,7 +1,7 @@
 "use strict";
 exports.__esModule = true;
 var Contextmenu = /** @class */ (function () {
-    function Contextmenu(click, undo, reundo, copy, cut, paste) {
+    function Contextmenu(click, undo, reundo, copy, cut, paste, save, load) {
         var _this = this;
         this.parent = document.getElementById("contextmenu");
         this.show = function (posX, posY) {
@@ -28,11 +28,19 @@ var Contextmenu = /** @class */ (function () {
         this.pasteBtn = document.createElement("div");
         this.pasteBtn.innerHTML = "Paste";
         this.pasteBtn.onclick = function () { return paste(); };
+        this.saveBtn = document.createElement("div");
+        this.saveBtn.innerHTML = "Save";
+        this.saveBtn.onclick = function () { return save(); };
+        this.loadBtn = document.createElement("div");
+        this.loadBtn.innerHTML = "Load";
+        this.loadBtn.onclick = function () { return load(); };
         this.parent.appendChild(this.undoBtn);
         this.parent.appendChild(this.reundoBtn);
         this.parent.appendChild(this.copyBtn);
         this.parent.appendChild(this.cutBtn);
         this.parent.appendChild(this.pasteBtn);
+        this.parent.appendChild(this.saveBtn);
+        this.parent.appendChild(this.loadBtn);
     }
     return Contextmenu;
 }());

@@ -100,3 +100,6 @@ body > div {
   position: absolute;
   border-color: green;
 }
+.jsonInput {
+  display: none;
+}
