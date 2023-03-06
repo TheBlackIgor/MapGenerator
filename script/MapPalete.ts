@@ -41,15 +41,6 @@ export default class MapPalete {
   };
 
   paste = (array: CopyI[], mouseX: number, mouseY: number) => {
-    // let i = 0;
-    // this.blocks.forEach((block) => {
-    //   if (i !== array.length)
-    //     if (block.x === array[i].x + x && block.y === array[i].y + y) {
-    //       block.setContent(array[i].content);
-    //       block.setBorder(null);
-    //       i++;
-    //     }
-    // });
     array.forEach((item) => {
       const correstpondingBlock = this.blocks.find(
         ({ x, y }) => item.x + mouseX == x && item.y + mouseY === y

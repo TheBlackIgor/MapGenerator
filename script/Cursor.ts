@@ -40,23 +40,45 @@ export default class Cursor {
     this.selector = new Selector(this.setSelector, this.selectorEffect);
     document.addEventListener("keydown", (e) => {
       this.keyDown = true;
+      console.log(e.key);
       this.keyId = e.key;
-      if (e.ctrlKey && (this.keyId === "c" || this.keyId === "C")) {
+      if (
+        (e.ctrlKey || e.metaKey) &&
+        (this.keyId === "c" || this.keyId === "C")
+      ) {
         this.copy();
-      } else if (e.ctrlKey && (this.keyId === "x" || this.keyId === "X")) {
+      } else if (
+        (e.ctrlKey || e.metaKey) &&
+        (this.keyId === "x" || this.keyId === "X")
+      ) {
         this.cut();
-      } else if (e.ctrlKey && (this.keyId === "v" || this.keyId === "V")) {
+      } else if (
+        (e.ctrlKey || e.metaKey) &&
+        (this.keyId === "v" || this.keyId === "V")
+      ) {
         this.paste();
-      } else if (e.ctrlKey && (this.keyId === "z" || this.keyId === "Z")) {
+      } else if (
+        (e.ctrlKey || e.metaKey) &&
+        (this.keyId === "z" || this.keyId === "Z")
+      ) {
         this.undo();
-      } else if (e.ctrlKey && (this.keyId === "y" || this.keyId === "Y")) {
+      } else if (
+        (e.ctrlKey || e.metaKey) &&
+        (this.keyId === "y" || this.keyId === "Y")
+      ) {
         this.reundo();
       } else if (this.keyId === "Backspace") {
         this.delete();
-      } else if (e.ctrlKey && (this.keyId === "s" || this.keyId === "S")) {
+      } else if (
+        (e.ctrlKey || e.metaKey) &&
+        (this.keyId === "s" || this.keyId === "S")
+      ) {
         e.preventDefault();
         this.save();
-      } else if (e.ctrlKey && (this.keyId === "l" || this.keyId === "L")) {
+      } else if (
+        (e.ctrlKey || e.metaKey) &&
+        (this.keyId === "l" || this.keyId === "L")
+      ) {
         e.preventDefault();
         this.load();
       }
@@ -115,7 +137,10 @@ export default class Cursor {
   mapBlockClick = (block: MapBlock) => {
     if (!this.pasting) {
       if (this.selectedBlocks.length > 0) this.unSelect();
-      if (!(this.keyDown && this.keyId === "Control")) this.selectedBlocks = [];
+      if (
+        !(this.keyDown && (this.keyId === "Control" || this.keyId === "Meta"))
+      )
+        this.selectedBlocks = [];
       const tempBlocks = this.selectedBlocks.filter(
         (b) => b.index !== block.index
       );
@@ -149,7 +174,8 @@ export default class Cursor {
   setSelector = (selector: HTMLDivElement) => {
     this.helperBlocksArray = [];
     if (this.selectedBlocks.length > 0) this.unSelect();
-    if (!(this.keyDown && this.keyId === "Control")) this.selectedBlocks = [];
+    if (!(this.keyDown && (this.keyId === "Control" || this.keyId === "Meta")))
+      this.selectedBlocks = [];
     const tempBlockArray = this.mapPalete.blocks
       .map((block) => block)
       .filter((block) => this.elementsOverlap(block.block, selector));

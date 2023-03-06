@@ -26,15 +26,6 @@ var MapPalete = /** @class */ (function () {
             });
         };
         this.paste = function (array, mouseX, mouseY) {
-            // let i = 0;
-            // this.blocks.forEach((block) => {
-            //   if (i !== array.length)
-            //     if (block.x === array[i].x + x && block.y === array[i].y + y) {
-            //       block.setContent(array[i].content);
-            //       block.setBorder(null);
-            //       i++;
-            //     }
-            // });
             array.forEach(function (item) {
                 var correstpondingBlock = _this.blocks.find(function (_a) {
                     var x = _a.x, y = _a.y;

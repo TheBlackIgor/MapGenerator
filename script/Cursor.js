@@ -63,7 +63,7 @@ var Cursor = /** @class */ (function () {
             if (!_this.pasting) {
                 if (_this.selectedBlocks.length > 0)
                     _this.unSelect();
-                if (!(_this.keyDown && _this.keyId === "Control"))
+                if (!(_this.keyDown && (_this.keyId === "Control" || _this.keyId === "Meta")))
                     _this.selectedBlocks = [];
                 var tempBlocks = _this.selectedBlocks.filter(function (b) { return b.index !== block.index; });
                 if (tempBlocks.length === _this.selectedBlocks.length)
@@ -97,7 +97,7 @@ var Cursor = /** @class */ (function () {
             _this.helperBlocksArray = [];
             if (_this.selectedBlocks.length > 0)
                 _this.unSelect();
-            if (!(_this.keyDown && _this.keyId === "Control"))
+            if (!(_this.keyDown && (_this.keyId === "Control" || _this.keyId === "Meta")))
                 _this.selectedBlocks = [];
             var tempBlockArray = _this.mapPalete.blocks
                 .map(function (block) { return block; })
@@ -227,30 +227,38 @@ var Cursor = /** @class */ (function () {
         this.selector = new Selector_1["default"](this.setSelector, this.selectorEffect);
         document.addEventListener("keydown", function (e) {
             _this.keyDown = true;
+            console.log(e.key);
             _this.keyId = e.key;
-            if (e.ctrlKey && (_this.keyId === "c" || _this.keyId === "C")) {
+            if ((e.ctrlKey || e.metaKey) &&
+                (_this.keyId === "c" || _this.keyId === "C")) {
                 _this.copy();
             }
-            else if (e.ctrlKey && (_this.keyId === "x" || _this.keyId === "X")) {
+            else if ((e.ctrlKey || e.metaKey) &&
+                (_this.keyId === "x" || _this.keyId === "X")) {
                 _this.cut();
             }
-            else if (e.ctrlKey && (_this.keyId === "v" || _this.keyId === "V")) {
+            else if ((e.ctrlKey || e.metaKey) &&
+                (_this.keyId === "v" || _this.keyId === "V")) {
                 _this.paste();
             }
-            else if (e.ctrlKey && (_this.keyId === "z" || _this.keyId === "Z")) {
+            else if ((e.ctrlKey || e.metaKey) &&
+                (_this.keyId === "z" || _this.keyId === "Z")) {
                 _this.undo();
             }
-            else if (e.ctrlKey && (_this.keyId === "y" || _this.keyId === "Y")) {
+            else if ((e.ctrlKey || e.metaKey) &&
+                (_this.keyId === "y" || _this.keyId === "Y")) {
                 _this.reundo();
             }
             else if (_this.keyId === "Backspace") {
                 _this["delete"]();
             }
-            else if (e.ctrlKey && (_this.keyId === "s" || _this.keyId === "S")) {
+            else if ((e.ctrlKey || e.metaKey) &&
+                (_this.keyId === "s" || _this.keyId === "S")) {
                 e.preventDefault();
                 _this.save();
             }
-            else if (e.ctrlKey && (_this.keyId === "l" || _this.keyId === "L")) {
+            else if ((e.ctrlKey || e.metaKey) &&
+                (_this.keyId === "l" || _this.keyId === "L")) {
                 e.preventDefault();
                 _this.load();
             }
