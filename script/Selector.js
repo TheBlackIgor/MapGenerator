@@ -1,11 +1,18 @@
 "use strict";
 exports.__esModule = true;
 var map = document.getElementById("map");
+var body = document.querySelector("body");
 var Selector = /** @class */ (function () {
     function Selector(select, tempSelect) {
         var _this = this;
         this.mouseDown = false;
+        window.addEventListener("scroll", function (e) {
+            console.log(body.scrollTop);
+            _this.selector.style.height =
+                _this.selector.style.height + window.pageYOffset + "px";
+        });
         map.onmousedown = function (e) {
+            _this.startWithOffset = false;
             if (e.button !== 0)
                 return;
             if (_this.selector)
@@ -16,6 +23,10 @@ var Selector = /** @class */ (function () {
             _this.selector = document.createElement("div");
             _this.selector.classList.add("selector");
             map.appendChild(_this.selector);
+            if (window.pageYOffset > 0)
+                _this.startWithOffset = true;
+            else
+                _this.startWithOffset = false;
         };
         map.onmousemove = function (e) {
             if (!_this.mouseDown)
@@ -41,9 +52,15 @@ var Selector = /** @class */ (function () {
                 startPosY = _this.startPosY;
             }
             _this.selector.style.left = startPosX + "px";
-            _this.selector.style.top = startPosY + "px";
+            if (_this.startWithOffset)
+                _this.selector.style.top = startPosY + window.pageYOffset + "px";
+            else
+                _this.selector.style.top = startPosY + "px";
             _this.selector.style.width = width + "px";
-            _this.selector.style.height = height + "px";
+            if (_this.startWithOffset)
+                _this.selector.style.height = height + "px";
+            else
+                _this.selector.style.height = height + window.pageYOffset + "px";
             tempSelect(_this.selector);
         };
         map.onmouseup = function (e) {

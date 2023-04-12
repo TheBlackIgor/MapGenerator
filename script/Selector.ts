@@ -1,4 +1,5 @@
 const map = document.getElementById("map");
+const body = document.querySelector("body");
 
 interface MouseDownPosI {
   x: number;
@@ -11,12 +12,19 @@ export default class Selector {
   selector: HTMLDivElement;
   startPosX: number;
   startPosY: number;
+  startWithOffset: boolean;
 
   constructor(
     select: (selector: HTMLDivElement) => void,
     tempSelect: (selector: HTMLDivElement) => void
   ) {
+    window.addEventListener("scroll", (e) => {
+      console.log(body.scrollTop);
+      this.selector.style.height =
+        this.selector.style.height + window.pageYOffset + "px";
+    });
     map.onmousedown = (e: MouseEvent) => {
+      this.startWithOffset = false;
       if (e.button !== 0) return;
       if (this.selector) map.removeChild(this.selector);
       this.mouseDown = true;
@@ -25,6 +33,8 @@ export default class Selector {
       this.selector = document.createElement("div");
       this.selector.classList.add("selector");
       map.appendChild(this.selector);
+      if (window.pageYOffset > 0) this.startWithOffset = true;
+      else this.startWithOffset = false;
     };
     map.onmousemove = (e: MouseEvent) => {
       if (!this.mouseDown) return;
@@ -47,9 +57,12 @@ export default class Selector {
         startPosY = this.startPosY;
       }
       this.selector.style.left = startPosX + "px";
-      this.selector.style.top = startPosY + "px";
+      if (this.startWithOffset)
+        this.selector.style.top = startPosY + window.pageYOffset + "px";
+      else this.selector.style.top = startPosY + "px";
       this.selector.style.width = width + "px";
-      this.selector.style.height = height + "px";
+      if (this.startWithOffset) this.selector.style.height = height + "px";
+      else this.selector.style.height = height + window.pageYOffset + "px";
       tempSelect(this.selector);
     };
 
